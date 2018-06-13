@@ -10,6 +10,8 @@ class ProjectCard extends Component {
                   repsNbr:0 ,
                   pageNbr : 1,
                   more:'',
+                  user:'',
+                  repo:''
                   };
     this.getMore = this.getMore.bind(this);
 
@@ -42,6 +44,10 @@ class ProjectCard extends Component {
      });
   }
   componentWillReceiveProps(newProps){
+    this.setState({
+      user:'',
+      repo:''
+    });
     console.log('search:',newProps.search);
     if(newProps.search && newProps.projects.length === 0){
       this.setState({noRepsFound : 'There is no repository matching '+newProps.title,

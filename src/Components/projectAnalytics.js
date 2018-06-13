@@ -17,6 +17,9 @@ class Project extends Component {
       committersWithLastCommits:{},
       committers:[]
     });
+    if(newProps.user === '' && newProps.repo === ''){
+      return;
+    }
     console.log('new',newProps);
     console.log('url:',"https://api.github.com/repos/"+newProps.user+'/'+newProps.repo+'/commits');
     fetch("https://api.github.com/repos/"+newProps.user+'/'+newProps.repo+'/commits')
@@ -39,19 +42,19 @@ class Project extends Component {
        console.log('count####',json.slice(0,100).length,' ',json);
        json.slice(0,100).map(commit =>{
          let user = commit.commit.committer.name;
-         if(!this.state.committersMap[user]){
+         if(!this.state.committersWithLastCommits[user]){
 
              this.state.committersWithLastCommits[user] = 0;
          }
 
-           this.state.committersWithLastCommits[user] = this.state.committersMap[user]+1;
+           this.state.committersWithLastCommits[user] = this.state.committersWithLastCommits[user]+1;
        });
 
        this.setState({
          committers : Object.keys(this.state.committersWithLastCommits).map(key => {
            let commitsNbr = this.state.committersWithLastCommits[key];
            return (
-           <div>
+           <div key={key}>
              {key}({commitsNbr})
            </div>);
          })
