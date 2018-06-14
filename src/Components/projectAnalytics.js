@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import BarChart from 'react-bar-chart';
 import Committers from './Committers';
 import '../App.css';
 
@@ -10,7 +11,8 @@ class Project extends Component {
                   committersMap :{},
                   committersWithLastCommits:{},
                   committers:[],
-                  menu:''
+                  menu:'',
+                  data:[]
                 };
   }
   componentWillReceiveProps(newProps){
@@ -20,7 +22,11 @@ class Project extends Component {
       committersWithLastCommits:{},
       committers:[],
       loading:'',
-      menu:''
+      menu:'',
+      xlabel : '',
+      ylabel :'',
+      margin:{},
+      commitsHistogram :''
     });
     if(newProps.user === '' && newProps.repo === ''){
       return;
@@ -98,6 +104,25 @@ class Project extends Component {
 
            this.state.committersWithLastCommits[user] = this.state.committersWithLastCommits[user]+1;
        });
+       let data = [];
+       Object.keys(this.state.committersWithLastCommits).map( key => {
+         let obj = {
+           text : key,
+          value :  this.state.committersWithLastCommits[key]
+        };
+         data.push(obj);
+       }
+     );
+     const margin = {top: 20, right: 20, bottom: 30, left: 40};
+     this.setState({
+       commitsHistogram : <BarChart ylabel='commits'
+       xlabel = 'Committers'
+           width={1500}
+           height={500}
+           margin={margin}
+           data={data}/>
+     });
+
 
        this.setState({
          allCommitters : Object.keys(committers).map(committer => {
@@ -131,18 +156,18 @@ class Project extends Component {
   }
 
   render() {
+
     return (
     <div>
-      {this.state.menu}
+
       {this.state.loading}
       <div className='commits'>
         {this.state.allCommitters}
       </div>
 
         <div className='commits'>
-          {this.state.committers}
+          {this.state.commitsHistogram}
         </div>
-        ###########################################
 
         <div className='commits'>
           {this.state.commits}
